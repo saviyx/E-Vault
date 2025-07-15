@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.0">
+    <persistence-unit name="AppPu" transaction-type="JTA">
+        <jta-data-source>evault_jdbc</jta-data-source>
+        <class>lk.jiat.evault.core.model.Customer</class>
+        <class>lk.jiat.evault.core.model.Staff</class>
+        <class>lk.jiat.evault.core.model.Admin</class>
+
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+        </properties>
+    </persistence-unit>
+</persistence>
