@@ -59,7 +59,7 @@
                         <webModule>
                             <groupId>lk.jiat.app</groupId>
                             <artifactId>web</artifactId>
-                            <contextRoot>/e-vault</contextRoot>
+                            <contextRoot>/E-Vault</contextRoot>
                             <bundleFileName>web-module.war</bundleFileName>
                         </webModule>
                     </modules>

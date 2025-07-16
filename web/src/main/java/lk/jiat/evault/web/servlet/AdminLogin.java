@@ -36,7 +36,7 @@ public class AdminLogin extends HttpServlet {
         AuthenticationStatus status = securityContext.authenticate(request, response, parameters);
         if (status == AuthenticationStatus.SUCCESS) {
             System.out.println("Authentication successful");
-            response.sendRedirect(request.getContextPath() + "/admin/dashbord.jsp");
+            response.sendRedirect(request.getContextPath() + "/admin/dashboard.jsp");
         } else {
             System.out.println("Authentication failed");
             throw new LoginFailedException("Invalid username or password");

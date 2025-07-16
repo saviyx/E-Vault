@@ -1,5 +1,6 @@
 package lk.jiat.evault.ejb.bean;
 
+import jakarta.ejb.Remote;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -9,11 +10,11 @@ import lk.jiat.evault.core.service.CustomerService;
 import java.util.List;
 
 @Stateless
+@Remote(CustomerService.class)  // ← ADD THIS LINE
 public class CustomerSessionBean implements CustomerService {
 
     @PersistenceContext
     private EntityManager em;
-
 
     @Override
     public Customer getCustomerById(Long id) {
@@ -56,6 +57,4 @@ public class CustomerSessionBean implements CustomerService {
             return false;
         }
     }
-
-
 }

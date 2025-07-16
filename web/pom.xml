@@ -31,7 +31,7 @@
             <artifactId>ejb</artifactId>
             <version>1.0</version>
             <type>ejb-client</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>lk.jiat.app</groupId>

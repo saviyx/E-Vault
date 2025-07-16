@@ -46,11 +46,11 @@
                 <p class="text-muted">Enter your credentials</p>
             </div>
 
-            <form action="${pageContext.request.contextPath}/admin/auth" method="POST">
+            <form action="${pageContext.request.contextPath}/admin/admin_login" method="POST">
                 <div class="mb-3">
-                    <label for="adminId" class="form-label">Admin ID</label>
-                    <input type="text" class="form-control" id="adminId" name="adminId"
-                           placeholder="Enter admin ID" required>
+                    <label for="email" class="form-label">Email</label>
+                    <input type="text" class="form-control" id="email" name="email"
+                           placeholder="Enter email" required>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
