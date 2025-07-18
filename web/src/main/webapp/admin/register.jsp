@@ -1,192 +1,462 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: savindu umantha
-  Date: 7/11/2025
-  Time: 12:24 AM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Registration | E-Vault</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .admin-register {
-            background-color: #f8f9fa;
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --primary-dark: #3a0ca3;
+            --secondary: #f72585;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
         }
-        .register-card {
-            max-width: 600px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
-        .security-level {
-            height: 8px;
+
+        body {
+            background-color: #f5f7ff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+        }
+
+        /* Visual Panel */
+        .visual-panel {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visual-panel::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -50px;
+            right: -50px;
+        }
+
+        .visual-panel::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            bottom: -30px;
+            left: -30px;
+        }
+
+        .admin-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .visual-panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .visual-panel p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 300px;
+        }
+
+        .security-img {
+            width: 100%;
+            max-width: 250px;
+            margin-top: 30px;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
+        }
+
+        /* Form Panel */
+        .form-panel {
+            padding: 50px;
+        }
+
+        .form-header {
+            margin-bottom: 30px;
+        }
+
+        .form-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .form-logo i {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .form-logo span {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .form-subtitle {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        /* Form Elements */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+        }
+
+        /* Password Strength */
+        .password-strength {
+            height: 4px;
+            background: #eee;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .strength-meter {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+        }
+
+        .password-hint {
+            font-size: 0.8rem;
+            color: var(--gray);
             margin-top: 5px;
         }
+
+        /* Terms */
+        .terms-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 25px 0;
+        }
+
+        .terms-checkbox {
+            margin-top: 3px;
+        }
+
+        .terms-text {
+            font-size: 0.9rem;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .terms-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        /* Login Link */
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: var(--gray);
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .register-container {
+                grid-template-columns: 1fr;
+            }
+
+            .visual-panel {
+                padding: 30px 20px;
+            }
+
+            .form-panel {
+                padding: 30px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="admin-register">
-<div class="container py-5">
-    <div class="register-card card mx-auto">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">
-                <i class="bi bi-person-plus"></i> Admin Registration
-            </h4>
+<body>
+<div class="register-container">
+    <!-- Visual Panel -->
+    <div class="visual-panel">
+        <i class="fas fa-shield-alt admin-icon"></i>
+        <h2>E-Vault Staff Registration</h2>
+        <p>Register new bank staff members with appropriate access levels</p>
+
+    </div>
+
+    <!-- Form Panel -->
+    <div class="form-panel">
+        <div class="form-header">
+            <div class="form-logo">
+                <i class="fas fa-vault"></i>
+                <span>E-Vault</span>
+            </div>
+            <h1 class="form-title">Register New Staff Member</h1>
+            <p class="form-subtitle">Fill  details to register neew staff member</p>
         </div>
-        <div class="card-body p-4">
-            <form action="${pageContext.request.contextPath}/admin/register" method="POST" id="registrationForm">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="firstName" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="firstName" name="firstName" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="lastName" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="lastName" name="lastName" required>
-                    </div>
+
+        <form action="${pageContext.request.contextPath}/admin/staff_register" method="POST">
+            <div class="form-grid">
+                <!-- First Name -->
+                <div class="form-group">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" id="firstName" name="firstName" class="form-control" placeholder="John" required>
                 </div>
 
-                <div class="mb-3">
-                    <label for="email" class="form-label">Corporate Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                <!-- Last Name -->
+                <div class="form-group">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Doe" required>
                 </div>
 
-                <div class="mb-3">
-                    <label for="adminId" class="form-label">Admin ID</label>
-                    <input type="text" class="form-control" id="adminId" name="adminId"
-                           pattern="[A-Za-z0-9]{8,}" title="Minimum 8 alphanumeric characters" required>
-                    <small class="text-muted">Must be at least 8 characters (letters and numbers only)</small>
+                <!-- Email -->
+                <div class="form-group full-width">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="john.doe@company.com" required>
                 </div>
 
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                    <div class="progress security-level">
-                        <div class="progress-bar" id="passwordStrength" role="progressbar"></div>
-                    </div>
-                    <small id="passwordHelp" class="text-muted"></small>
+                <!-- Contact -->
+                <div class="form-group full-width">
+                    <label for="contact" class="form-label">Contact Number</label>
+                    <input type="tel" id="contact" name="contact" class="form-control" placeholder="0771077618" required>
                 </div>
 
-                <div class="mb-3">
-                    <label for="confirmPassword" class="form-label">Confirm Password</label>
-                    <input type="password" class="form-control" id="confirmPassword" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="securityQuestion" class="form-label">Security Question</label>
-                    <select class="form-select" id="securityQuestion" name="securityQuestion" required>
-                        <option value="">Select a security question</option>
-                        <option>What was your first pet's name?</option>
-                        <option>What city were you born in?</option>
-                        <option>What is your mother's maiden name?</option>
+                <!-- Role -->
+                <div class="form-group full-width">
+                    <label for="role" class="form-label">Choose Staff Role</label>
+                    <select id="role" name="role" class="form-control form-select" required>
+                        <option value="">Select Role</option>
+                        <option value="customer_support">Customer Support</option>
+                        <option value="financial_officer">Financial Officer</option>
+                        <option value="loan_officer">Loan Officer</option>
+                        <option value="teller">Teller</option>
+                        <option value="it_support">IT Support</option>
+                        <option value="audit_officer">Audit Officer</option>
                     </select>
                 </div>
 
-                <div class="mb-3">
-                    <label for="securityAnswer" class="form-label">Security Answer</label>
-                    <input type="text" class="form-control" id="securityAnswer" name="securityAnswer" required>
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Create password" required>
+                    <div class="password-strength">
+                        <div class="strength-meter" id="strengthMeter"></div>
+                    </div>
+                    <small class="password-hint" id="passwordHint">Use 8+ characters with uppercase, numbers & symbols</small>
                 </div>
 
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="terms" required>
-                    <label class="form-check-label" for="terms">
-                        I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a>
-                    </label>
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" id="confirmPassword" class="form-control" placeholder="Re-enter password" required>
                 </div>
-
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="bi bi-person-check"></i> Register Admin
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <% if (request.getParameter("success") != null) { %>
-    <div class="alert alert-success mt-3 text-center">
-        <i class="bi bi-check-circle-fill"></i>
-        Admin registration successful! Verification email sent.
-    </div>
-    <% } %>
-
-    <% if (request.getParameter("error") != null) { %>
-    <div class="alert alert-danger mt-3 text-center">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        <%= request.getParameter("error") %>
-    </div>
-    <% } %>
-</div>
-
-<!-- Terms Modal -->
-<div class="modal fade" id="termsModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Admin Terms of Service</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-                <h6>Administrator Responsibilities</h6>
-                <p>As an administrator of E-Vault Banking System, you agree to:</p>
-                <ul>
-                    <li>Maintain strict confidentiality of all banking data</li>
-                    <li>Use strong authentication methods</li>
-                    <li>Immediately report any security incidents</li>
-                    <li>Comply with all banking regulations</li>
-                </ul>
-                <hr>
-                <p class="small text-muted">By registering, you acknowledge that unauthorized access or misuse of this system may result in legal action.</p>
+
+            <!-- Terms Checkbox -->
+            <div class="terms-group">
+                <input type="checkbox" id="terms" class="terms-checkbox" required>
+                <label for="terms" class="terms-text">
+                    I agree to the <a href="#" class="terms-link">Terms of Service</a> and acknowledge the
+                    Staff responsibilities
+                </label>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I Understand</button>
-            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-user-shield"></i> Register Staff
+            </button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="../login.jsp">Sign In</a>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 <script>
-    // Password strength checker
-    document.getElementById('password').addEventListener('input', function() {
-        const password = this.value;
-        const strengthBar = document.getElementById('passwordStrength');
-        const helpText = document.getElementById('passwordHelp');
+    // Password Strength Indicator
+    const passwordInput = document.getElementById('password');
+    const strengthMeter = document.getElementById('strengthMeter');
+    const passwordHint = document.getElementById('passwordHint');
 
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
         let strength = 0;
+
+        // Length check
         if (password.length >= 8) strength += 1;
+        // Uppercase check
         if (password.match(/[A-Z]/)) strength += 1;
+        // Number check
         if (password.match(/[0-9]/)) strength += 1;
+        // Special character check
         if (password.match(/[^A-Za-z0-9]/)) strength += 1;
 
+        // Update strength meter
         const width = strength * 25;
-        strengthBar.style.width = width + '%';
+        strengthMeter.style.width = width + '%';
 
+        // Update colors and hints
         if (strength <= 1) {
-            strengthBar.className = 'progress-bar bg-danger';
-            helpText.textContent = 'Weak password';
+            strengthMeter.style.backgroundColor = '#f72585';
+            passwordHint.textContent = 'Weak password - add uppercase, numbers & symbols';
+            passwordHint.style.color = '#f72585';
         } else if (strength <= 2) {
-            strengthBar.className = 'progress-bar bg-warning';
-            helpText.textContent = 'Moderate password';
+            strengthMeter.style.backgroundColor = '#f8961e';
+            passwordHint.textContent = 'Moderate password - could be stronger';
+            passwordHint.style.color = '#f8961e';
         } else {
-            strengthBar.className = 'progress-bar bg-success';
-            helpText.textContent = 'Strong password';
+            strengthMeter.style.backgroundColor = '#4cc9f0';
+            passwordHint.textContent = 'Strong password - good job!';
+            passwordHint.style.color = '#4cc9f0';
         }
     });
 
-    // Form validation
-    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+    // Form Validation
+    document.querySelector('form').addEventListener('submit', function(e) {
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
+        const termsChecked = document.getElementById('terms').checked;
 
+        // Password match check
         if (password !== confirmPassword) {
             e.preventDefault();
-            alert('Passwords do not match!');
+            alert('Error: Passwords do not match');
+            document.getElementById('confirmPassword').focus();
+            return false;
+        }
+
+        // Terms agreement check
+        if (!termsChecked) {
+            e.preventDefault();
+            alert('You must agree to the Terms of Service');
             return false;
         }
 

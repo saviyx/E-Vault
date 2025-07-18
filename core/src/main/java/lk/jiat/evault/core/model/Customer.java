@@ -1,7 +1,9 @@
 package lk.jiat.evault.core.model;
 
 import jakarta.persistence.*;
+import lk.jiat.evault.core.exception.InsufficientBalanceException;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -39,19 +41,36 @@ public class Customer {
     private UserType userType;
 
     private String accountType;
+    @Column(unique = true, length = 10)
     private String accountNumber;
+    @Column(nullable = false, columnDefinition = "DECIMAL(15,2) DEFAULT 0.00")
     private Double balance;
+    @Column(nullable = false, columnDefinition = "DECIMAL(15,2) DEFAULT 0.00")
+    private Double fixedBalance;
     private String idType;
     private String idNumber;
 
-    public Customer(String firstName, String lastName, String dob, String gender, String email, String encriptedPassword, String contact, String address, String city, String state, String accountType, String accountNumber, Double balance) {
+    public void deductBalance(BigDecimal amount) throws InsufficientBalanceException {
+        BigDecimal currentBalance = BigDecimal.valueOf(this.balance);
+        if (currentBalance.compareTo(amount) < 0) {
+            throw new InsufficientBalanceException("Insufficient balance");
+        }
+        this.balance = currentBalance.subtract(amount).doubleValue();
     }
 
-    public Customer(String firstName, String lastName, Date birthDate, Date accountOpeningDate, String gender, String email, String password, String contact, String address, String city, String state, UserType userType, String accountType, String accountNumber, Double balance, String idType, String idNumber) {
+    public void addBalance(BigDecimal amount) {
+        BigDecimal currentBalance = BigDecimal.valueOf(this.balance);
+        this.balance = currentBalance.add(amount).doubleValue();
+    }
+
+
+    public Customer(String firstName, String lastName, Date birthDate, String gender,
+                    String email, String password, String contact, String address,
+                    String city, String state, String accountType, String idType,
+                    String idNumber, String accountNumber, Double balance) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
-        this.accountOpeningDate = accountOpeningDate;
         this.gender = gender;
         this.email = email;
         this.password = password;
@@ -59,14 +78,14 @@ public class Customer {
         this.address = address;
         this.city = city;
         this.state = state;
-        this.userType = userType;
         this.accountType = accountType;
-        this.accountNumber = accountNumber;
-        this.balance = balance;
         this.idType = idType;
         this.idNumber = idNumber;
-
-
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+        this.fixedBalance = 0.0;
+        this.accountOpeningDate = new Date(); // Set current date
+        this.userType = UserType.CUSTOMER; // Assuming you have this enum
     }
 
     public Customer() {
@@ -200,6 +219,15 @@ public class Customer {
     public void setBalance(Double balance) {
         this.balance = balance;
     }
+
+    public Double getFixedBalance() {
+        return fixedBalance;
+    }
+
+    public void setFixedBalance(Double fixedBalance) {
+        this.fixedBalance = fixedBalance;
+    }
+
 
     public String getIdType() {
         return idType;

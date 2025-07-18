@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Login | E-Vault</title>
+    <title>Customer Login | E-Vault</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -27,7 +27,7 @@
             overflow: hidden;
         }
         .card-header {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             padding: 2rem;
             text-align: center;
@@ -48,11 +48,16 @@
             margin-bottom: 1.5rem;
         }
         .btn-login {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             border: none;
             padding: 14px;
             width: 100%;
             border-radius: 8px;
+        }
+        .register-link {
+            text-align: center;
+            display: block;
+            margin-top: 1rem;
         }
     </style>
 </head>
@@ -61,20 +66,20 @@
     <div class="login-card card">
         <div class="card-header">
             <div class="portal-icon">
-                <i class="bi bi-person-badge"></i>
+                <i class="bi bi-person-circle"></i>
             </div>
-            <h3>Staff Portal</h3>
-            <p class="mb-0">Bank employees only</p>
+            <h3>Customer Login</h3>
+            <p class="mb-0">Access your account</p>
         </div>
         <div class="card-body">
-            <form action="${pageContext.request.contextPath}/staff/staff_login" method="post">
+            <form>
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="text" class="form-control" id="email" name="email" placeholder="Enter your Email" required>
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" placeholder="Enter your username">
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password">
                 </div>
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="rememberMe">
@@ -84,6 +89,7 @@
                     <i class="bi bi-box-arrow-in-right me-2"></i> Login
                 </button>
             </form>
+            <a href="#" class="register-link">Don't have an account? Register now</a>
         </div>
     </div>
 </div>

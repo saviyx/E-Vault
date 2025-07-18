@@ -35,7 +35,7 @@ public class StaffLogin extends HttpServlet {
 
         if (status == AuthenticationStatus.SUCCESS) {
             System.out.println("Authentication successful");
-            response.sendRedirect(request.getContextPath() + "/staff/dashbord.jsp");
+            response.sendRedirect(request.getContextPath() + "/staff/dashboard.jsp");
         } else {
             System.out.println("Authentication failed");
             throw new LoginFailedException("Invalid username or password");

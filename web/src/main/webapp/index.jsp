@@ -128,7 +128,7 @@
                         System administrators can manage user accounts, configure system settings,
                         and oversee all banking operations through this secure portal.
                     </p>
-                    <a href="admin-login.jsp" class="btn btn-admin btn-portal mt-3">
+                    <a href="${pageContext.request.contextPath}/admin/login.jsp" class="btn btn-admin btn-portal mt-3">
                         <i class="bi bi-box-arrow-in-right"></i> Admin Login
                     </a>
                 </div>
@@ -147,7 +147,7 @@
                         Bank staff members can access customer accounts, process transactions,
                         and provide banking services through this dedicated interface.
                     </p>
-                    <a href="staff-login.jsp" class="btn btn-staff btn-portal mt-3">
+                    <a href="${pageContext.request.contextPath}/staff/login.jsp" class="btn btn-staff btn-portal mt-3">
                         <i class="bi bi-box-arrow-in-right"></i> Staff Login
                     </a>
                 </div>
@@ -166,7 +166,7 @@
                         Customers can securely access their accounts, make transactions,
                         view statements, and manage their finances anytime, anywhere.
                     </p>
-                    <a href="#customer-login" class="btn btn-customer btn-portal mt-3">
+                    <a href="${pageContext.request.contextPath}/customer/login.jsp" class="btn btn-customer btn-portal mt-3">
                         <i class="bi bi-box-arrow-in-right"></i> Customer Login
                     </a>
                 </div>

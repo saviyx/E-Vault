@@ -67,8 +67,8 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/admin/users">
-                <i class="bi bi-people me-2"></i> User Management
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/register.jsp">
+                <i class="bi bi-people me-2"></i> Register Staff
             </a>
         </li>
         <li class="nav-item">

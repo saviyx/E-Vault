@@ -34,7 +34,16 @@ public class Staff {
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 
-    public Staff(String firstName, String lastName, String email, String encriptedPassword, String role, String s) {
+
+    public Staff(String firstName, String lastName, String email, String phone, String encryptedPassword, String role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.contact = phone;  // Note: mapping phone parameter to contact field
+        this.password = encryptedPassword;
+        this.role = role;
+        this.userType = UserType.STAFF;  // Set default values
+        this.status = Status.ACTIVE;     // Set default values
     }
 
     public Staff(String firstName, String lastName, String email, String contact, String role, String password, UserType userType, Status status) {
