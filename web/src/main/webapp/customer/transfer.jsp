@@ -1,10 +1,8 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: savindu umantha
-  Date: 7/10/2025
-  Time: 10:13 AM
-  To change this template use File | Settings | File Templates.
---%>
+<%
+    System.out.println("transfer.jsp - Session: " + (session != null ? session.getId() : "null"));
+    System.out.println("transfer.jsp - customerId: " + session.getAttribute("customerId"));
+    System.out.println("transfer.jsp - customer: " + session.getAttribute("customer"));
+%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -19,6 +17,8 @@
         :root {
             --primary-color: #1e3c72;
             --secondary-color: #2a5298;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
         }
         .sidebar {
             background-color: var(--primary-color);
@@ -43,14 +43,47 @@
         .nav-pills .nav-link.active {
             background-color: var(--primary-color);
         }
-        .transfer-step {
+        .transfer-tab-content {
             display: none;
         }
-        .transfer-step.active {
+        .transfer-tab-content.active {
             display: block;
         }
-        .progress {
-            height: 8px;
+        .alert-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .alert-success {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+        .alert-error {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+        .amount-input {
+            position: relative;
+        }
+        .amount-input .currency-symbol {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: var(--dark);
+        }
+        .amount-input .form-control {
+            padding-left: 2.5rem;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
     </style>
 </head>
@@ -139,246 +172,129 @@
     <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-md-8">
+                <!-- Alert Messages -->
+                <c:if test="${not empty success}">
+                    <div class="alert-message alert-success">
+                        <i class="bi bi-check-circle"></i> ${success}
+                    </div>
+                </c:if>
+                <c:if test="${not empty error}">
+                    <div class="alert-message alert-error">
+                        <i class="bi bi-exclamation-circle"></i> ${error}
+                    </div>
+                </c:if>
+
                 <div class="card transfer-card mb-4">
                     <div class="card-body">
-                        <ul class="nav nav-pills mb-4" id="transferTypeTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="internal-tab" data-bs-toggle="pill" data-bs-target="#internal" type="button">Internal Transfer</button>
+                        <!-- Transfer Type Tabs -->
+                        <ul class="nav nav-tabs mb-4" id="transferTypeTabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#internal">Between My Accounts</a>
                             </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="external-tab" data-bs-toggle="pill" data-bs-target="#external" type="button">External Transfer</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="scheduled-tab" data-bs-toggle="pill" data-bs-target="#scheduled" type="button">Scheduled Transfer</button>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#external">To Another Person</a>
                             </li>
                         </ul>
-                        <div class="tab-content" id="transferTypeTabsContent">
-                            <div class="tab-pane fade show active" id="internal" role="tabpanel">
-                                <div id="transferProgress" class="mb-4">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span>Step 1: Transfer Details</span>
-                                        <span>Step 2: Review</span>
-                                        <span>Step 3: Confirmation</span>
-                                    </div>
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 33%;"></div>
-                                    </div>
-                                </div>
 
-                                <div class="transfer-step active" id="step1">
-                                    <form id="transferForm">
-                                        <div class="mb-3">
-                                            <label for="fromAccount" class="form-label">From Account</label>
-                                            <select class="form-select" id="fromAccount" required>
-                                                <option selected disabled>Select account</option>
-                                                <option>Primary Savings (****3456) - $12,456.78</option>
-                                                <option>Checking Account (****7890) - $5,678.90</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="toAccount" class="form-label">To Account</label>
-                                            <select class="form-select" id="toAccount" required>
-                                                <option selected disabled>Select account</option>
-                                                <option>Primary Savings (****3456)</option>
-                                                <option>Checking Account (****7890)</option>
-                                                <option>John Smith (****5678) - National Bank</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="amount" class="form-label">Amount</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="number" class="form-control" id="amount" placeholder="0.00" min="0.01" step="0.01" required>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="description" class="form-label">Description (Optional)</label>
-                                            <input type="text" class="form-control" id="description" placeholder="e.g., Rent payment">
-                                        </div>
-                                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                            <button type="button" class="btn btn-primary" id="nextStep1">Next</button>
-                                        </div>
-                                    </form>
-                                </div>
+                        <!-- Tab Content -->
+                        <div class="tab-content">
+                            <!-- Internal Transfer Form -->
+                            <div class="tab-pane fade show active" id="internal">
+                                <form id="internalTransferForm" action="${pageContext.request.contextPath}/customer/transaction" method="post">
+                                    <input type="hidden" name="transferType" value="internal">
 
-                                <div class="transfer-step" id="step2">
-                                    <h6 class="mb-4">Review Your Transfer</h6>
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <p class="mb-1"><strong>From Account:</strong></p>
-                                                    <p id="reviewFromAccount">Primary Savings (****3456)</p>
-
-                                                    <p class="mb-1"><strong>Amount:</strong></p>
-                                                    <p id="reviewAmount">$0.00</p>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <p class="mb-1"><strong>To Account:</strong></p>
-                                                    <p id="reviewToAccount">Checking Account (****7890)</p>
-
-                                                    <p class="mb-1"><strong>Description:</strong></p>
-                                                    <p id="reviewDescription">-</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 form-check">
-                                        <input type="checkbox" class="form-check-input" id="confirmTransfer" required>
-                                        <label class="form-check-label" for="confirmTransfer">I confirm the details of this transfer are correct</label>
-                                    </div>
-                                    <div class="d-grid gap-2 d-md-flex justify-content-md-between">
-                                        <button type="button" class="btn btn-outline-secondary" id="backStep2">Back</button>
-                                        <button type="button" class="btn btn-primary" id="nextStep2">Confirm & Transfer</button>
-                                    </div>
-                                </div>
-
-                                <div class="transfer-step" id="step3">
-                                    <div class="text-center py-4">
-                                        <div class="mb-4">
-                                            <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
-                                        </div>
-                                        <h4 class="mb-3">Transfer Successful!</h4>
-                                        <p class="text-muted mb-4">Your transfer has been processed successfully.</p>
-                                        <div class="card mb-4">
-                                            <div class="card-body text-start">
-                                                <p class="mb-2"><strong>Transaction ID:</strong> TXN202310156789</p>
-                                                <p class="mb-2"><strong>Amount:</strong> <span id="confirmationAmount">$0.00</span></p>
-                                                <p class="mb-2"><strong>From Account:</strong> <span id="confirmationFrom">Primary Savings (****3456)</span></p>
-                                                <p class="mb-2"><strong>To Account:</strong> <span id="confirmationTo">Checking Account (****7890)</span></p>
-                                                <p class="mb-0"><strong>Date & Time:</strong> <span id="confirmationDate">Oct 15, 2023 14:30:45</span></p>
-                                            </div>
-                                        </div>
-                                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                                            <button type="button" class="btn btn-outline-secondary me-md-2" id="printReceipt">Print Receipt</button>
-                                            <button type="button" class="btn btn-primary" id="newTransfer">New Transfer</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="external" role="tabpanel">
-                                <div class="alert alert-info">
-                                    <i class="bi bi-info-circle me-2"></i> External transfers to other banks may take 1-3 business days to process.
-                                </div>
-                                <form>
                                     <div class="mb-3">
-                                        <label for="extFromAccount" class="form-label">From Account</label>
-                                        <select class="form-select" id="extFromAccount" required>
-                                            <option selected disabled>Select account</option>
-                                            <option>Primary Savings (****3456) - $12,456.78</option>
-                                            <option>Checking Account (****7890) - $5,678.90</option>
+                                        <label class="form-label">From Account</label>
+                                        <div class="form-control bg-light">
+                                            Savings Account (****3456) - $12,456.78
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="toAccount" class="form-label">To Account</label>
+                                        <select id="toAccount" name="toAccount" class="form-select" required>
+                                            <option value="">Select account</option>
+                                            <option value="checking">Checking Account (****7890)</option>
+                                            <option value="savings">Fixed Deposit Account (****5678)</option>
                                         </select>
                                     </div>
+
                                     <div class="mb-3">
-                                        <label for="extBankName" class="form-label">Recipient Bank</label>
-                                        <select class="form-select" id="extBankName" required>
-                                            <option selected disabled>Select bank</option>
-                                            <option>National Bank</option>
-                                            <option>Global Bank</option>
-                                            <option>City Bank</option>
-                                            <option>Other Bank</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="extAccountNumber" class="form-label">Recipient Account Number</label>
-                                        <input type="text" class="form-control" id="extAccountNumber" placeholder="Enter account number" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="extAccountName" class="form-label">Recipient Name</label>
-                                        <input type="text" class="form-control" id="extAccountName" placeholder="Enter account holder's name" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="extAmount" class="form-label">Amount</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control" id="extAmount" placeholder="0.00" min="0.01" step="0.01" required>
+                                        <label for="amount" class="form-label">Amount</label>
+                                        <div class="amount-input">
+                                            <span class="currency-symbol">$</span>
+                                            <input type="number" name="amount" id="amount" class="form-control" placeholder="0.00" min="1" step="0.01" required>
                                         </div>
                                     </div>
+
                                     <div class="mb-3">
-                                        <label for="extDescription" class="form-label">Description (Optional)</label>
-                                        <input type="text" class="form-control" id="extDescription" placeholder="e.g., Rent payment">
+                                        <label for="description" class="form-label">Description (Optional)</label>
+                                        <input type="text" name="description" id="description" class="form-control" placeholder="e.g. Rent payment, Gift, etc.">
                                     </div>
-                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                        <button type="submit" class="btn btn-primary">Transfer</button>
-                                    </div>
+
+                                    <button type="submit" class="btn btn-primary w-100">Transfer Money</button>
                                 </form>
                             </div>
-                            <div class="tab-pane fade" id="scheduled" role="tabpanel">
+
+                            <!-- External Transfer Form -->
+                            <div class="tab-pane fade" id="external">
                                 <div class="alert alert-info">
-                                    <i class="bi bi-info-circle me-2"></i> Schedule recurring or one-time future transfers.
+                                    <i class="bi bi-info-circle me-2"></i> External transfers may take 1-3 business days to process.
                                 </div>
-                                <form>
+                                <form id="externalTransferForm" action="${pageContext.request.contextPath}/customer/transaction" method="post">
+                                    <input type="hidden" name="transferType" value="external">
+
                                     <div class="mb-3">
-                                        <label for="schFromAccount" class="form-label">From Account</label>
-                                        <select class="form-select" id="schFromAccount" required>
-                                            <option selected disabled>Select account</option>
-                                            <option>Primary Savings (****3456) - $12,456.78</option>
-                                            <option>Checking Account (****7890) - $5,678.90</option>
+                                        <label class="form-label">From Account</label>
+                                        <div class="form-control bg-light">
+                                            Savings Account (****3456) - $12,456.78
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="recipientBank" class="form-label">Recipient Bank</label>
+                                        <select id="recipientBank" name="recipientBank" class="form-select" required>
+                                            <option value="">Select bank</option>
+                                            <option value="evault">E-Vault Bank</option>
+                                            <option value="bankofamerica">Bank of America</option>
+                                            <option value="wellsfargo">Wells Fargo</option>
+                                            <option value="citibank">Citibank</option>
+                                            <option value="usbank">U.S. Bank</option>
+                                            <option value="other">Other Bank</option>
                                         </select>
                                     </div>
+
                                     <div class="mb-3">
-                                        <label for="schToAccount" class="form-label">To Account</label>
-                                        <select class="form-select" id="schToAccount" required>
-                                            <option selected disabled>Select account</option>
-                                            <option>Primary Savings (****3456)</option>
-                                            <option>Checking Account (****7890)</option>
-                                            <option>John Smith (****5678) - National Bank</option>
-                                        </select>
+                                        <label for="recipientName" class="form-label">Recipient Name</label>
+                                        <input type="text" name="recipientName" id="recipientName" class="form-control" placeholder="Enter recipient's full name" required>
                                     </div>
+
                                     <div class="mb-3">
-                                        <label for="schAmount" class="form-label">Amount</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control" id="schAmount" placeholder="0.00" min="0.01" step="0.01" required>
+                                        <label for="recipientAccount" class="form-label">Account Number</label>
+                                        <input type="text" name="recipientAccount" id="recipientAccount" class="form-control" placeholder="Enter recipient's account number" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="amountExternal" class="form-label">Amount</label>
+                                        <div class="amount-input">
+                                            <span class="currency-symbol">$</span>
+                                            <input type="number" name="amount" id="amountExternal" class="form-control" placeholder="0.00" min="1" step="0.01" required>
                                         </div>
                                     </div>
+
                                     <div class="mb-3">
-                                        <label for="schDescription" class="form-label">Description (Optional)</label>
-                                        <input type="text" class="form-control" id="schDescription" placeholder="e.g., Rent payment">
+                                        <label for="descriptionExternal" class="form-label">Description (Optional)</label>
+                                        <input type="text" name="description" id="descriptionExternal" class="form-control" placeholder="e.g. Rent payment, Gift, etc.">
                                     </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Transfer Date</label>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="schDateType" id="schOneTime" checked>
-                                            <label class="form-check-label" for="schOneTime">
-                                                One-time transfer on:
-                                            </label>
-                                            <input type="date" class="form-control mt-1" id="schOneTimeDate">
-                                        </div>
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input" type="radio" name="schDateType" id="schRecurring">
-                                            <label class="form-check-label" for="schRecurring">
-                                                Recurring transfer:
-                                            </label>
-                                            <div class="row mt-1">
-                                                <div class="col-md-6">
-                                                    <select class="form-select" id="schFrequency">
-                                                        <option>Weekly</option>
-                                                        <option selected>Monthly</option>
-                                                        <option>Quarterly</option>
-                                                        <option>Yearly</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <select class="form-select" id="schDay">
-                                                        <option>1st</option>
-                                                        <option>5th</option>
-                                                        <option selected>15th</option>
-                                                        <option>Last day</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                        <button type="submit" class="btn btn-primary">Schedule Transfer</button>
-                                    </div>
+
+                                    <button type="submit" class="btn btn-primary w-100">Transfer Money</button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="col-md-4">
                 <div class="card transfer-card">
                     <div class="card-body">
@@ -407,7 +323,7 @@
                             </a>
                             <a href="#" class="list-group-item list-group-item-action">
                                 <div class="d-flex w-100 justify-content-between">
-                                    <small class="text-muted">Oct 14, 2023</small>
+                                    <small class="text-muted">Yesterday</small>
                                 </div>
                                 <p class="mb-1">To John Smith</p>
                                 <small class="text-danger">-$200.00</small>
@@ -434,83 +350,33 @@
         document.querySelector('.sidebar').classList.toggle('d-none');
     });
 
-    // Transfer wizard functionality
-    const nextStep1 = document.getElementById('nextStep1');
-    const nextStep2 = document.getElementById('nextStep2');
-    const backStep2 = document.getElementById('backStep2');
-    const newTransfer = document.getElementById('newTransfer');
-    const printReceipt = document.getElementById('printReceipt');
-    const steps = document.querySelectorAll('.transfer-step');
-    const progressBar = document.querySelector('.progress-bar');
+    // Form validation and submission handling
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            // Validate form
+            const inputs = this.querySelectorAll('input[required], select[required]');
+            let isValid = true;
 
-    nextStep1.addEventListener('click', function() {
-        // Validate form
-        const form = document.getElementById('transferForm');
-        if (!form.checkValidity()) {
-            form.reportValidity();
-            return;
-        }
+            inputs.forEach(input => {
+                if (!input.value) {
+                    input.style.borderColor = 'var(--danger-color)';
+                    input.style.animation = 'shake 0.5s';
+                    isValid = false;
 
-        // Update review section
-        document.getElementById('reviewFromAccount').textContent =
-            document.getElementById('fromAccount').options[document.getElementById('fromAccount').selectedIndex].text.split(' - ')[0];
-        document.getElementById('reviewToAccount').textContent =
-            document.getElementById('toAccount').options[document.getElementById('toAccount').selectedIndex].text.split(' - ')[0];
-        document.getElementById('reviewAmount').textContent =
-            '$' + parseFloat(document.getElementById('amount').value).toFixed(2);
-        document.getElementById('reviewDescription').textContent =
-            document.getElementById('description').value || '-';
+                    input.addEventListener('animationend', () => {
+                        input.style.animation = '';
+                    });
+                }
+            });
 
-        // Move to step 2
-        steps[0].classList.remove('active');
-        steps[1].classList.add('active');
-        progressBar.style.width = '66%';
-    });
-
-    nextStep2.addEventListener('click', function() {
-        if (!document.getElementById('confirmTransfer').checked) {
-            alert('Please confirm that the transfer details are correct');
-            return;
-        }
-
-        // Update confirmation section
-        document.getElementById('confirmationFrom').textContent =
-            document.getElementById('reviewFromAccount').textContent;
-        document.getElementById('confirmationTo').textContent =
-            document.getElementById('reviewToAccount').textContent;
-        document.getElementById('confirmationAmount').textContent =
-            document.getElementById('reviewAmount').textContent;
-
-        const now = new Date();
-        document.getElementById('confirmationDate').textContent =
-            now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' ' +
-            now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-        // Move to step 3
-        steps[1].classList.remove('active');
-        steps[2].classList.add('active');
-        progressBar.style.width = '100%';
-    });
-
-    backStep2.addEventListener('click', function() {
-        steps[1].classList.remove('active');
-        steps[0].classList.add('active');
-        progressBar.style.width = '33%';
-    });
-
-    newTransfer.addEventListener('click', function() {
-        // Reset form
-        document.getElementById('transferForm').reset();
-
-        // Move to step 1
-        steps[2].classList.remove('active');
-        steps[0].classList.add('active');
-        progressBar.style.width = '33%';
-    });
-
-    printReceipt.addEventListener('click', function() {
-        alert('Printing receipt...');
-        // In a real app, this would open the print dialog for the receipt section
+            if (!isValid) {
+                e.preventDefault();
+            } else {
+                const submitButton = this.querySelector('button[type="submit"]');
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                submitButton.disabled = true;
+            }
+        });
     });
 </script>
 </body>

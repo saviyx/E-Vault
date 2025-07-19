@@ -3,6 +3,7 @@ package lk.jiat.evault.core.model;
 import jakarta.persistence.*;
 import lk.jiat.evault.core.exception.InsufficientBalanceException;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -11,15 +12,17 @@ import java.util.Date;
 
 @NamedQueries({
         @NamedQuery(
-                name = "Customer.findByEmail", query = "select c from Customer c where c.email=:email"
+                name = "Customer.findByEmail",
+                query = "select c from Customer c where c.email=:email"
         ),
         @NamedQuery(
-                name = "Customer.findByEmailAndPassword", query = "select c from Customer c where" +
+                name = "Customer.findByEmailAndPassword",
+                query = "select c from Customer c where" +
                 " c.email=:email and c.password=:password"
         )
 })
 
-public class Customer {
+public class Customer implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,6 +50,8 @@ public class Customer {
     private Double balance;
     @Column(nullable = false, columnDefinition = "DECIMAL(15,2) DEFAULT 0.00")
     private Double fixedBalance;
+    @Column(nullable = false, columnDefinition = "DECIMAL(5,2) DEFAULT 0.05")
+    private Double interestRate = 0.05; // Default 5% annual interest
     private String idType;
     private String idNumber;
 
@@ -228,6 +233,13 @@ public class Customer {
         this.fixedBalance = fixedBalance;
     }
 
+    public Double getInterestRate() {
+        return interestRate;
+    }
+
+    public void setInterestRate(Double interestRate) {
+        this.interestRate = interestRate;
+    }
 
     public String getIdType() {
         return idType;

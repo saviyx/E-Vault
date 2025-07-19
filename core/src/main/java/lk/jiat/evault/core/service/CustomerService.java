@@ -5,6 +5,7 @@ import lk.jiat.evault.core.exception.InsufficientBalanceException;
 import lk.jiat.evault.core.model.Customer;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Remote
 public interface CustomerService {
@@ -22,4 +23,5 @@ public interface CustomerService {
     void deleteCustomer(Long id);
     boolean validate(String email, String password);
     boolean doesAccountNumberExist(String accountNumber);
+    List<Customer> getAllCustomers();
 }

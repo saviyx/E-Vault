@@ -9,6 +9,7 @@ import lk.jiat.evault.core.exception.InsufficientBalanceException;
 import lk.jiat.evault.core.model.Customer;
 import lk.jiat.evault.core.service.CustomerService;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)
@@ -20,6 +21,12 @@ public class CustomerSessionBean implements CustomerService {
     @Override
     public Customer getCustomerById(Long id) {
         return em.find(Customer.class, id);
+    }
+
+    @Override
+    public List<Customer> getAllCustomers() {
+        return em.createQuery("SELECT c FROM Customer c", Customer.class)
+                .getResultList();
     }
 
     @Override

@@ -106,13 +106,13 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="transaction_history.jsp">
                 <i class="bi bi-clock-history"></i> Transaction History
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="../admin/report.jsp">
-                <i class="bi bi-graph-up"></i> Reports
+            <a class="nav-link" href="scheduled-transfers.jsp">
+                <i class="bi bi-graph-up"></i> Schedule Transfer
             </a>
         </li>
         <li class="nav-item">
